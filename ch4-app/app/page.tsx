@@ -1,11 +1,15 @@
-const page = () => {
-  return (
-    <div>
-      <h1 className="text-5xl underline">
-        Welcome to Next.js!
-      </h1>
-    </div>
-  )
+import Hello from './components/hello';
+
+const Home = () => {
+	console.log("What type of component am I?")
+	return (
+		<main>
+			<div className="text-5xl underline">
+				Welcome to Next.js!
+			</div>
+			<Hello />
+		</main>
+	)
 }
 
-export default page
+export default Home
