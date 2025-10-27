@@ -1,12 +1,10 @@
 {
-    "trailingComma": "es5",
-    "semi": true,
-    "tabWidth": 4,
-    "printWidth": 120,
-    "endOfLine": "auto",
-    "useTabs": true,
-    "arrowParens": "always",
-    "plugins": [
-        "prettier-plugin-tailwindcss"
-    ]
+	"trailingComma": "es5",
+	"semi": true,
+	"tabWidth": 4,
+	"printWidth": 80,
+	"endOfLine": "auto",
+	"useTabs": true,
+	"arrowParens": "always",
+	"plugins": ["prettier-plugin-tailwindcss"]
 }
