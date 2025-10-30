@@ -1,4 +1,5 @@
 import { auth, signOut } from "@/auth";
+import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
@@ -14,11 +15,15 @@ const questions = [
 			{ _id: "1", name: "react" },
 			{ _id: "2", name: "javascript" },
 		],
-		author: { _id: "1", name: "Jimmy Page" },
+		author: {
+			_id: "1",
+			name: "Jimmy Page",
+			image: "https://www.svgrepo.com/show/382109/male-avatar-boy-face-man-user-7.svg",
+		},
 		upvotes: 10,
 		answers: 5,
 		views: 100,
-		createdAt: new Date(),
+		createdAt: new Date("2024-06-20T10:00:00Z"),
 	},
 	{
 		_id: "2",
@@ -28,18 +33,26 @@ const questions = [
 			{ _id: "1", name: "javascript" },
 			{ _id: "2", name: "react" },
 		],
-		author: { _id: "1", name: "Jimmy Page" },
+		author: {
+			_id: "1",
+			name: "Jimmy Page",
+			image: "https://www.svgrepo.com/show/382109/male-avatar-boy-face-man-user-7.svg",
+		},
 		upvotes: 11,
 		answers: 0,
 		views: 10,
-		createdAt: new Date(),
+		createdAt: new Date("2025-10-09T11:32:00Z"),
 	},
 	{
 		_id: "3",
 		title: "How to learn Go?",
 		description: "I want to learn golang, can anyone help me?",
 		tags: [{ _id: "3", name: "go" }],
-		author: { _id: "1", name: "Jimmy Page" },
+		author: {
+			_id: "1",
+			name: "Jimmy Page",
+			image: "https://www.svgrepo.com/show/382109/male-avatar-boy-face-man-user-7.svg",
+		},
 		upvotes: 4,
 		answers: 1,
 		views: 45,
@@ -88,7 +101,7 @@ const Home = async ({ searchParams }: SearchParams) => {
 			<HomeFilter />
 			<div className="mt-10 flex w-full flex-col gap-6">
 				{filteredQuestions.map((question) => (
-					<h1 key={question._id}>{question.title}</h1>
+					<QuestionCard key={question._id} question={question} />
 				))}
 			</div>
 		</>
