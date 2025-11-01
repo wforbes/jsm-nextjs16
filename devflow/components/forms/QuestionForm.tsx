@@ -13,8 +13,17 @@ import { AskQuestionSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useRef } from "react";
+import { MDXEditorMethods } from "@mdxeditor/editor";
+import dynamic from "next/dynamic";
+
+const Editor = dynamic(() => import("@/components/editor"), {
+	// https://mdxeditor.dev/editor/docs/getting-started
+	ssr: false,
+});
 
 const QuestionForm = () => {
+	const editorRef = useRef<MDXEditorMethods>(null);
 	const form = useForm({
 		resolver: zodResolver(AskQuestionSchema),
 		defaultValues: {
@@ -66,7 +75,13 @@ const QuestionForm = () => {
 								Detailed explanation of your problem{" "}
 								<span className="text-primary-500">*</span>
 							</FormLabel>
-							<FormControl>Editor</FormControl>
+							<FormControl>
+								<Editor
+									editorRef={editorRef}
+									value={field.value}
+									fieldChange={field.onChange}
+								/>
+							</FormControl>
 							<FormDescription className="body-regular text-light-500 mt-1">
 								Introduce the problem and expand on what
 								you&apos;ve put in the title.
