@@ -74,7 +74,7 @@ const QuestionForm = () => {
 		}
 	};
 
-	const handleCreateQuestion = (data: any) => {
+	const handleCreateQuestion = (data: z.infer<typeof AskQuestionSchema>) => {
 		console.log("Question Data:", data);
 	};
 
