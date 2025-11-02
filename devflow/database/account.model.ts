@@ -1,8 +1,7 @@
-import { model, models, ObjectId, Schema } from "mongoose";
+import { model, models, Types, Schema } from "mongoose";
 
 export interface IAccount {
-	_id: string;
-	userId: ObjectId;
+	userId: Types.ObjectId;
 	name: string;
 	image: string;
 	password: string;
@@ -15,7 +14,7 @@ const AccountSchema = new Schema(
 		userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 		name: { type: String, required: true },
 		image: { type: String, required: true },
-		password: { type: String, required: true },
+		password: { type: String },
 		provider: { type: String, required: true },
 		providerAccountId: { type: String, required: true },
 	},
