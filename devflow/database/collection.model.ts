@@ -7,8 +7,12 @@ export interface ICollection {
 
 const CollectionSchema = new Schema(
 	{
-		author: { type: Types.ObjectId, ref: "User", required: true },
-		question: { type: Types.ObjectId, ref: "Question", required: true },
+		author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+		question: {
+			type: Schema.Types.ObjectId,
+			ref: "Question",
+			required: true,
+		},
 	},
 	{ timestamps: true }
 );
