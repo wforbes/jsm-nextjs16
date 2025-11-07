@@ -7,6 +7,7 @@ export interface ICollection {
 
 const CollectionSchema = new Schema(
 	{
+		// author is the owner of the collection
 		author: { type: Schema.Types.ObjectId, ref: "User", required: true },
 		question: {
 			type: Schema.Types.ObjectId,
