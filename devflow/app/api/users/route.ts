@@ -18,7 +18,6 @@ export async function GET() {
 	}
 }
 
-// Create User
 export async function POST(request: Request) {
 	try {
 		await dbConnect();
