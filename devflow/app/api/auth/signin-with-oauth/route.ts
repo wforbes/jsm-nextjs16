@@ -74,9 +74,12 @@ export async function POST(request: Request) {
 				{ session }
 			);
 		}
+
 		await session.commitTransaction();
 
-		// should we return a response here?
+		return NextResponse.json({
+			success: true,
+		});
 	} catch (error: unknown) {
 		await session.abortTransaction();
 		return handleError(error, "api") as APIErrorResponse;
