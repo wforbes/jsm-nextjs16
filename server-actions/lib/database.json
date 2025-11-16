@@ -1,0 +1,56 @@
+{
+  "3": {
+    "id": 3,
+    "name": "Remove Unused Image Import",
+    "status": "completed",
+    "type": "refactor"
+  },
+  "4": {
+    "id": 4,
+    "name": "Update Home Page Component",
+    "status": "open",
+    "type": "feature"
+  },
+  "5": {
+    "id": 5,
+    "name": "Improve Error Handling in API Routes",
+    "status": "in progress",
+    "type": "improvement"
+  },
+  "6": {
+    "id": 6,
+    "name": "Optimize Database Transactions",
+    "status": "completed",
+    "type": "optimization"
+  },
+  "7": {
+    "id": 7,
+    "name": "Refactor API Response Structure",
+    "status": "open",
+    "type": "refactor"
+  },
+  "8": {
+    "id": 8,
+    "name": "Learn Server Actions",
+    "type": "feature",
+    "status": "open"
+  },
+  "9": {
+    "id": 9,
+    "name": "Test some stuff",
+    "type": "testing",
+    "status": "open"
+  },
+  "10": {
+    "id": 10,
+    "name": "Create a new ticket (server side)",
+    "type": "feature",
+    "status": "open"
+  },
+  "11": {
+    "id": 11,
+    "name": "Create a new ticket (client side)",
+    "type": "",
+    "status": "open"
+  }
+}
