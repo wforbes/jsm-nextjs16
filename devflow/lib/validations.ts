@@ -49,7 +49,7 @@ export const AskQuestionSchema = z.object({
 		.string()
 		.min(5, { message: "Title must be at least 5 characters long." })
 		.max(100, { message: "Title cannot exceed 100 characters." }),
-	body: z.string().min(1, { message: "Body is required." }),
+	content: z.string().min(1, { message: "Content is required." }),
 	tags: z
 		.array(
 			z
@@ -122,11 +122,9 @@ export const SignInWithOAuthSchema = z.object({
 		.min(1, { message: "Provider Account ID is required." }),
 	user: z.object({
 		name: z.string().min(1, { message: "Name is required." }),
-		username: z
-			.string()
-			.min(3, {
-				message: "Username must be at least 3 characters long.",
-			}),
+		username: z.string().min(3, {
+			message: "Username must be at least 3 characters long.",
+		}),
 		email: z.email({ message: "Please provide a valid email address" }),
 		image: z
 			.url({ message: "Please provide a valid image URL" })

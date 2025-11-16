@@ -30,7 +30,7 @@ const QuestionForm = () => {
 		resolver: zodResolver(AskQuestionSchema),
 		defaultValues: {
 			title: "",
-			body: "",
+			content: "",
 			tags: [],
 		},
 	});
@@ -109,7 +109,7 @@ const QuestionForm = () => {
 				/>
 				<FormField
 					control={form.control}
-					name="body"
+					name="content"
 					render={({ field }) => (
 						<FormItem className="flex w-full flex-col">
 							<FormLabel className="paragraph-semibold text-dark400_light800">
