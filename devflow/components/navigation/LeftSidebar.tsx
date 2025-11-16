@@ -33,7 +33,7 @@ export function LeftSidebar() {
 					asChild
 					className="small-medium light-border-2 btn-tertiary text-dark400_light900 min-h-[42px] w-full rounded-lg border px-4 py-3 shadow-none"
 				>
-					<Link href={ROUTES.SIGN_IN}>
+					<Link href={ROUTES.SIGN_UP}>
 						<Image
 							src="/icons/sign-up.svg"
 							alt="Sign Up"
