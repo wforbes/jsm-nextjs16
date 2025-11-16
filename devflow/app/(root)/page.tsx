@@ -68,10 +68,6 @@ interface SearchParams {
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
-	const session = await auth();
-
-	console.log(`Session ${JSON.stringify(session)}`);
-
 	//const session = await auth();
 	const { query = "", filter = "" } = await searchParams;
 	// const { data } = await axios.get("/api/questions", { query: { search: query }});

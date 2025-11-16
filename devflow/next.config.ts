@@ -14,6 +14,16 @@ const nextConfig: NextConfig = {
 				hostname: "www.svgrepo.com",
 				port: "",
 			},
+			{
+				protocol: "https",
+				hostname: "lh3.googleusercontent.com",
+				port: "",
+			},
+			{
+				protocol: "https",
+				hostname: "avatars.githubusercontent.com",
+				port: "",
+			},
 		],
 	},
 };

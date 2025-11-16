@@ -7,10 +7,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SheetClose } from "@/components/ui/sheet";
 
-const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
+const NavLinks = ({
+	isMobileNav = false,
+	userId,
+}: {
+	isMobileNav?: boolean;
+	userId?: string;
+}) => {
 	const pathname = usePathname();
-	const userId = 1;
-
+	// TODO: Hydration error stemming from changing profile userId
+	//	dynamically. Need to find a way to fix this.
 	return (
 		<>
 			{sidebarLinks.map((item) => {
