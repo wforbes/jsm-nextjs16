@@ -32,7 +32,7 @@ export default function UserAvatar({
 						width={36}
 						height={36}
 						className="object-cover"
-						quality={100}
+						quality={75}
 					/>
 				) : (
 					<AvatarFallback className="primary-gradient font-space-grotesk font-bold">
