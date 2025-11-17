@@ -23,7 +23,7 @@ const InteractionSchema = new Schema<IInteraction>(
 );
 
 const Interaction =
-	models?.interaction ||
+	models?.Interaction ||
 	model<IInteraction>("Interaction", InteractionSchema);
 
 export default Interaction;
