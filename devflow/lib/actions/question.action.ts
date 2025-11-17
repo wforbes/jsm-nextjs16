@@ -53,12 +53,12 @@ export async function createQuestion(
 		for (const tag of tags) {
 			// search for a tag of the specific name
 			//  if we dont find it, we insert a new one
-			//  or if we do find it, we increment the questionCount
+			//  or if we do find it, we increment the question count
 			const existingTag = await Tag.findOneAndUpdate(
 				{
 					name: { $regex: new RegExp(`^${tag}$`, "i") },
 				},
-				{ $setOnInsert: { name: tag }, $inc: { questionCount: 1 } },
+				{ $setOnInsert: { name: tag }, $inc: { questions: 1 } },
 				{ new: true, upsert: true, session }
 			);
 			tagIds.push(existingTag!._id);
@@ -142,7 +142,7 @@ export async function editQuestion(
 					{
 						name: { $regex: `^${tag}$`, $options: "i" },
 					},
-					{ $setOnInsert: { name: tag }, $inc: { questionCount: 1 } },
+					{ $setOnInsert: { name: tag }, $inc: { questions: 1 } },
 					{ new: true, upsert: true, session }
 				);
 				if (existingTag) {
@@ -161,7 +161,7 @@ export async function editQuestion(
 			);
 			await Tag.updateMany(
 				{ _id: { $in: tagIdsToRemove } },
-				{ $inc: { questionCount: -1 } },
+				{ $inc: { questions: -1 } },
 				{ session }
 			);
 			await TagQuestion.deleteMany(
