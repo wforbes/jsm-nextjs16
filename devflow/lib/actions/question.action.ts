@@ -7,8 +7,9 @@ import {
 	AskQuestionSchema,
 	EditQuestionSchema,
 	GetQuestionSchema,
+	PaginatedSearchParamsSchema,
 } from "../validations";
-import mongoose from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import Tag, { ITagDocument } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 
@@ -205,6 +206,69 @@ export async function getQuestion(
 		return {
 			success: true,
 			data: JSON.parse(JSON.stringify(question)),
+		};
+	} catch (error) {
+		return handleError(error as Error) as ErrorResponse;
+	}
+}
+
+export async function getQuestions(
+	params: PaginatedSearchParams
+): Promise<ActionResponse<{ questions: Question[]; isNext: boolean }>> {
+	const validationResult = await action({
+		params,
+		schema: PaginatedSearchParamsSchema,
+	});
+	if (validationResult instanceof Error) {
+		return handleError(validationResult) as ErrorResponse;
+	}
+	const { page = 1, pageSize = 10, query, filter } = validationResult.params!;
+	const skip = (Number(page) - 1) * pageSize; // calculate how many documents to skip
+	const limit = Number(pageSize);
+
+	const filterQuery: FilterQuery<typeof Question> = {};
+	// TODO: implement recommended logic
+	if (filter === "recommended")
+		return { success: true, data: { questions: [], isNext: false } };
+
+	if (query) {
+		filterQuery.$or = [
+			{ title: { $regex: new RegExp(query, "i") } },
+			{ content: { $regex: new RegExp(query, "i") } },
+		];
+	}
+
+	let sortCriteria = {};
+	switch (filter) {
+		case "newest":
+			sortCriteria = { createdAt: -1 };
+			break;
+		case "unanswered":
+			filterQuery.answers = 0;
+			sortCriteria = { createdAt: -1 };
+			break;
+		case "popular":
+			sortCriteria = { upvotes: -1 };
+			break;
+		default:
+			sortCriteria = { createdAt: -1 };
+			break;
+	}
+
+	try {
+		const totalQuestions = await Question.countDocuments(filterQuery);
+		const questions = await Question.find(filterQuery)
+			.populate("tags", "name")
+			.populate("author", "name image")
+			.lean() // convert to plain JS objects, easier to work with
+			.sort(sortCriteria)
+			.skip(skip)
+			.limit(limit); // fetch one extra document to check if there's a next page
+		// Determine if there's a next page
+		const isNext = totalQuestions > skip + questions.length;
+		return {
+			success: true,
+			data: { questions: JSON.parse(JSON.stringify(questions)), isNext },
 		};
 	} catch (error) {
 		return handleError(error as Error) as ErrorResponse;

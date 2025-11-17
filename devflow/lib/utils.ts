@@ -16,7 +16,8 @@ export function getDeviconClassName(name: string) {
 	return `${classStr ?? techIconMap["devicon"]}`;
 }
 
-export const getDurationAgoOfDate = (date: Date) => {
+export const getDurationAgoOfDate = (createdAt: Date) => {
+	const date = new Date(createdAt);
 	const now = new Date();
 	const secondsAgo = Math.floor((now.getTime() - date.getTime()) / 1000);
 
