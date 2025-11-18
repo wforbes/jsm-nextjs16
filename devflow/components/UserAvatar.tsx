@@ -2,12 +2,14 @@ import ROUTES from "@/constants/routes";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface Props {
 	id: string;
 	name: string;
 	imageUrl?: string | null;
 	className?: string;
+	fallbackClassName?: string;
 }
 
 export default function UserAvatar({
@@ -15,6 +17,7 @@ export default function UserAvatar({
 	name,
 	imageUrl,
 	className = "h-9 w-9",
+	fallbackClassName,
 }: Props) {
 	const initials = name
 		.split(" ")
@@ -35,7 +38,12 @@ export default function UserAvatar({
 						quality={75}
 					/>
 				) : (
-					<AvatarFallback className="primary-gradient font-space-grotesk font-bold">
+					<AvatarFallback
+						className={cn(
+							fallbackClassName,
+							"primary-gradient font-space-grotesk font-bold"
+						)}
+					>
 						{initials}
 					</AvatarFallback>
 				)}
