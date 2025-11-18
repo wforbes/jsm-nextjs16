@@ -13,6 +13,8 @@ import mongoose, { FilterQuery } from "mongoose";
 import Tag, { ITagDocument } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 
+const REMOVE_ORPHAN_TAGS_ON_EDIT = true;
+
 export async function createQuestion(
 	params: CreateQuestionParams
 ): Promise<ActionResponse<Question>> {
@@ -159,15 +161,25 @@ export async function editQuestion(
 			const tagIdsToRemove = tagsToRemove.map(
 				(tag: ITagDocument) => tag._id
 			);
+
 			await Tag.updateMany(
 				{ _id: { $in: tagIdsToRemove } },
 				{ $inc: { questions: -1 } },
 				{ session }
 			);
+
+			if (REMOVE_ORPHAN_TAGS_ON_EDIT) {
+				await Tag.deleteMany(
+					{ _id: { $in: tagIdsToRemove }, questions: 0 },
+					{ session }
+				);
+			}
+
 			await TagQuestion.deleteMany(
 				{ tag: { $in: tagIdsToRemove }, question: questionId },
 				{ session }
 			);
+
 			question.tags = question.tags.filter(
 				(tag: mongoose.Types.ObjectId) =>
 					!tagIdsToRemove.some((id: mongoose.Types.ObjectId) =>
