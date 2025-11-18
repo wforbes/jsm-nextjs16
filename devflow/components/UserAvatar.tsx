@@ -34,7 +34,7 @@ export default function UserAvatar({
 						alt={name}
 						width={36}
 						height={36}
-						className="object-cover"
+						className="w-full object-cover"
 						quality={75}
 					/>
 				) : (
