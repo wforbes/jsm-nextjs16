@@ -3,21 +3,20 @@ import Preview from "@/components/editor/Preview";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/routes";
-import { getQuestion } from "@/lib/actions/question.action";
+import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getDurationAgoOfDate } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import View from "../View";
 
 export default async function QuestionDetails({ params }: RouteParams) {
 	const { id } = await params;
-	const {
-		success,
-		data: question,
-		error,
-	} = await getQuestion({
-		questionId: id,
-	});
+
+	const [_, getResponse] = await Promise.all([
+		incrementViews({ questionId: id }),
+		getQuestion({ questionId: id }),
+	]);
+
+	const { success, data: question, error } = getResponse;
 	if (!success || !question) return redirect(ROUTES.NOT_FOUND);
 
 	const { title, content, author, createdAt, answers, views, tags } =
@@ -25,7 +24,6 @@ export default async function QuestionDetails({ params }: RouteParams) {
 
 	return (
 		<>
-			<View questionId={id} />
 			<div className="flex-start w-full flex-col">
 				<div className="flex w-full flex-col-reverse justify-between">
 					<div className="flex items-center justify-start gap-1">
@@ -33,7 +31,6 @@ export default async function QuestionDetails({ params }: RouteParams) {
 							id={author._id}
 							name={author.name}
 							imageUrl={author.image}
-							className="size-22"
 							fallbackClassName="text-[10px]"
 						/>
 						<Link href={ROUTES.PROFILE(author._id)}>
