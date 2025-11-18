@@ -3,6 +3,8 @@ import handleError from "../handlers/error";
 import { PaginatedSearchParamsSchema } from "../validations";
 import { Tag } from "@/database";
 import action from "../handlers/action";
+import { getDeviconClassName, getTechDescription } from "../utils";
+import { techIconMap } from "../techIconMap";
 
 export async function getTags(
 	params: PaginatedSearchParams
@@ -21,6 +23,8 @@ export async function getTags(
 	const filterQuery: FilterQuery<typeof Tag> = {};
 
 	if (query) {
+		// TODO: enhance search to be able to look through techIconMap and techDescriptionMap
+		//  and match entries based on that text with the corresponding tag name
 		filterQuery.$or = [
 			{ name: { $regex: query, $options: "i" } },
 			{ description: { $regex: query, $options: "i" } },

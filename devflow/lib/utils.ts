@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { techIconMap } from "./techIconMap";
+import { techDescriptionMap } from "./techDescriptionMap";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -14,6 +15,16 @@ export function getDeviconClassName(name: string) {
 	}
 
 	return `${classStr ?? techIconMap["devicon"]}`;
+}
+
+export function getTechDescription(name: string) {
+	const normalized = name.replace(/[ .]/g, "").toLowerCase();
+	const desc = techDescriptionMap[normalized];
+
+	if (desc) return desc;
+
+	// fallback / wildcard description
+	return `${name} is a tool or concept widely used in software engineering, providing valuable capabilities and benefits.`;
 }
 
 export const getDurationAgoOfDate = (createdAt: Date) => {
