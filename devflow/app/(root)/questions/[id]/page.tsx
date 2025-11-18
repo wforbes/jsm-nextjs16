@@ -7,20 +7,23 @@ import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getDurationAgoOfDate } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 
 export default async function QuestionDetails({ params }: RouteParams) {
 	const { id } = await params;
 
-	const [_, getResponse] = await Promise.all([
-		incrementViews({ questionId: id }),
-		getQuestion({ questionId: id }),
-	]);
+	const {
+		success,
+		data: question,
+		error,
+	} = await getQuestion({ questionId: id });
+	after(async () => await incrementViews({ questionId: id }));
 
-	const { success, data: question, error } = getResponse;
 	if (!success || !question) return redirect(ROUTES.NOT_FOUND);
 
 	const { title, content, author, createdAt, answers, views, tags } =
 		question;
+	const displayViews = views + 1; // increment views for this current visit
 
 	return (
 		<>
@@ -65,7 +68,7 @@ export default async function QuestionDetails({ params }: RouteParams) {
 				<Metric
 					imgUrl="/icons/eye.svg"
 					alt="eye icon"
-					value={formatNumber(views)}
+					value={formatNumber(displayViews)}
 					title=""
 					textStyles="small-regular text-dark400_light700"
 				/>
