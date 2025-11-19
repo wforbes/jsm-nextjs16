@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import Answer, { IAnswerDocument } from "@/database/answer.model";
-import { AnswerServerSchema } from "../validations";
+import { AnswerServerSchema, GetAnswersSchema } from "../validations";
 import { Question } from "@/database";
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/routes";
@@ -60,5 +60,70 @@ export async function createAnswer(
 		throw error;
 	} finally {
 		await session.endSession();
+	}
+}
+
+export async function getAnswers(params: GetAnswersParams): Promise<
+	ActionResponse<{
+		answers: Answer[];
+		isNext: boolean;
+		totalAnswers: number;
+	}>
+> {
+	const validationResult = await action({
+		params,
+		schema: GetAnswersSchema,
+	});
+
+	if (validationResult instanceof Error) {
+		return handleError(validationResult) as ErrorResponse;
+	}
+
+	const {
+		questionId,
+		page = 1,
+		pageSize = 10,
+		filter,
+	} = validationResult.params!;
+	const skip = (Number(page) - 1) * pageSize;
+	const limit = Number(pageSize);
+
+	let sortCriteria = {};
+	switch (filter) {
+		case "newest":
+			sortCriteria = { createdAt: -1 };
+			break;
+		case "oldest":
+			sortCriteria = { createdAt: 1 };
+			break;
+		case "popular":
+			sortCriteria = { upvotes: -1 };
+			break;
+		default:
+			sortCriteria = { createdAt: -1 };
+			break;
+	}
+
+	try {
+		const totalAnswers = await Answer.countDocuments({
+			question: questionId,
+		});
+		const answers = await Answer.find({ question: questionId })
+			.populate("author", "_id name image")
+			.sort(sortCriteria)
+			.skip(skip)
+			.limit(limit);
+
+		const isNext = totalAnswers > skip + answers.length;
+		return {
+			success: true,
+			data: {
+				answers: JSON.parse(JSON.stringify(answers)),
+				isNext,
+				totalAnswers,
+			},
+		};
+	} catch (error) {
+		return handleError(error as Error) as ErrorResponse;
 	}
 }

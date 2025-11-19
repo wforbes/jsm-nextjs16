@@ -5,6 +5,7 @@ import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/routes";
 import { Answer } from "@/database";
+import { getAnswers } from "@/lib/actions/answer.action";
 import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getDurationAgoOfDate } from "@/lib/utils";
 import Link from "next/link";
@@ -22,6 +23,18 @@ export default async function QuestionDetails({ params }: RouteParams) {
 	after(async () => await incrementViews({ questionId: id }));
 
 	if (!success || !question) return redirect(ROUTES.NOT_FOUND);
+
+	const {
+		success: answersLoaded,
+		data: answersData,
+		error: answersError,
+	} = await getAnswers({
+		questionId: id,
+		page: 1,
+		pageSize: 10,
+		filter: "newest",
+	});
+	console.log(`Answers: ${JSON.stringify(answersData)}`);
 
 	const { title, content, author, createdAt, answers, views, tags } =
 		question;
