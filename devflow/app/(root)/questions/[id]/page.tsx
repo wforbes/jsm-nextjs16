@@ -1,3 +1,4 @@
+import AllAnswers from "@/components/answers/AllAnswers";
 import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
@@ -8,6 +9,7 @@ import { Answer } from "@/database";
 import { getAnswers } from "@/lib/actions/answer.action";
 import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getDurationAgoOfDate } from "@/lib/utils";
+import { ALL } from "dns";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
@@ -101,6 +103,14 @@ export default async function QuestionDetails({ params }: RouteParams) {
 					/>
 				))}
 			</div>
+			<section className="my-5">
+				<AllAnswers
+					data={answersData?.answers}
+					success={answersLoaded}
+					error={answersError}
+					totalAnswers={answersData?.totalAnswers || 0}
+				/>
+			</section>
 			<section className="my-5">
 				<AnswerForm questionId={question._id} />
 			</section>

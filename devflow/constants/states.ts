@@ -47,3 +47,13 @@ export const EMPTY_COLLECTIONS = {
 		href: ROUTES.COLLECTION,
 	},
 };
+
+export const EMPTY_ANSWERS = {
+	title: "No Answers Yet",
+	message:
+		"The answer section is empty. Be the first to share your knowledge and help others.",
+	// button: {
+	// 	text: "Answer",
+	// 	href: ROUTES.HOME,
+	// },
+};
