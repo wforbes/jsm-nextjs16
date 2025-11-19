@@ -5,7 +5,7 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -17,26 +17,39 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
-import { AnswerSchema } from "@/lib/validations";
+import { AnswerClientSchema } from "@/lib/validations";
+import { createAnswer } from "@/lib/actions/answer.action";
+import { toast } from "sonner";
 
 const Editor = dynamic(() => import("@/components/editor"), {
 	// https://mdxeditor.dev/editor/docs/getting-started
 	ssr: false,
 });
 
-export default function AnswerForm() {
-	const [isSubmitting, setIsSubmitting] = useState(false);
+export default function AnswerForm({ questionId }: { questionId: string }) {
+	const [isAnswering, startAnsweringTransition] = useTransition();
 	const [isAISubmitting, setisAISubmitting] = useState(false);
 	const editorRef = useRef<MDXEditorMethods>(null);
-	const form = useForm<z.infer<typeof AnswerSchema>>({
-		resolver: zodResolver(AnswerSchema), //standardSchemaResolver(AnswerSchema),
+	const form = useForm<z.infer<typeof AnswerClientSchema>>({
+		resolver: zodResolver(AnswerClientSchema), //standardSchemaResolver(AnswerClientSchema),
 		defaultValues: {
 			content: "",
 		},
 	});
 
-	const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
-		console.log(values);
+	const handleSubmit = async (values: z.infer<typeof AnswerClientSchema>) => {
+		startAnsweringTransition(async () => {
+			const result = await createAnswer({
+				questionId,
+				content: values.content,
+			});
+			if (result.success) {
+				form.reset();
+				toast.success("Answer posted successfully!");
+			} else {
+				toast.error(result.error?.message || "Something went wrong.");
+			}
+		});
 	};
 
 	return (
@@ -98,10 +111,10 @@ export default function AnswerForm() {
 					<div className="flex justify-end">
 						<Button
 							type="submit"
-							disabled={isSubmitting || isAISubmitting}
+							disabled={isAnswering || isAISubmitting}
 							className="primary-gradient w-fit font-bold"
 						>
-							{isSubmitting ? (
+							{isAnswering ? (
 								<>
 									<ReloadIcon className="mr-2 size-4 animate-spin" />
 									Posting...
