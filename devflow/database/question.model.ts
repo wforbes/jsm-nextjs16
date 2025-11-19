@@ -8,7 +8,7 @@ export interface IQuestion {
 	views: number;
 	upvotes: number;
 	downvotes: number;
-	answers: Types.ObjectId[];
+	answers: number;
 }
 export interface IQuestionDocument extends IQuestion, Document {}
 
@@ -21,7 +21,7 @@ const QuestionSchema = new Schema<IQuestion>(
 		views: { type: Number, default: 0 },
 		upvotes: { type: Number, default: 0 },
 		downvotes: { type: Number, default: 0 },
-		answers: { type: [Schema.Types.ObjectId], ref: "Answer", default: [] },
+		answers: { type: Number, default: 0 },
 	},
 	{ timestamps: true }
 );
