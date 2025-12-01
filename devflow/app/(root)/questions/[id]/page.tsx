@@ -36,7 +36,7 @@ export default async function QuestionDetails({ params }: RouteParams) {
 		pageSize: 10,
 		filter: "newest",
 	});
-	console.log(`Answers: ${JSON.stringify(answersData)}`);
+	//console.log(`Answers: ${JSON.stringify(answersData)}`);
 
 	const { title, content, author, createdAt, answers, views, tags } =
 		question;
