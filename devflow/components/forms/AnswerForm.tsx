@@ -71,22 +71,29 @@ export default function AnswerForm({ questionId, questionTitle, questionContent 
 			toast.error("You must be logged in to generate an AI answer.");
 			return;
 		}
+
 		setisAISubmitting(true);
+
+		const userAnswer = editorRef.current?.getMarkdown() || "";
+
 		try {
-			const { success, data, error } = await api.ai.getAnswer(questionTitle, questionContent);
+			const { success, data, error } = await api.ai.getAnswer(questionTitle, questionContent, userAnswer);
+
 			if (!success) {
 				return toast.error(
 					error?.message || "Failed to generate AI answer. Please try again."
 				);
 			}
+
 			const formattedAnswer = data.replace(/<br>/g, " ").toString().trim();
+
 			if (editorRef.current) {
 				editorRef.current.setMarkdown(formattedAnswer);
 				form.setValue("content", formattedAnswer);
 				form.trigger("content");
 			}
-			toast.success("AI answer generated successfully!");
 
+			toast.success("AI answer generated successfully!");
 		} catch (error) {
 			toast.error("Failed to generate AI answer. Please try again.");
 		} finally {
