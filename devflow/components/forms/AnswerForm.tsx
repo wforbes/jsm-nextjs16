@@ -20,15 +20,26 @@ import {
 import { AnswerClientSchema } from "@/lib/validations";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { api } from "@/lib/api";
 
 const Editor = dynamic(() => import("@/components/editor"), {
 	// https://mdxeditor.dev/editor/docs/getting-started
 	ssr: false,
 });
 
-export default function AnswerForm({ questionId }: { questionId: string }) {
+interface Props {
+	questionId: string;
+	questionTitle: string;
+	questionContent: string;
+}
+
+export default function AnswerForm({ questionId, questionTitle, questionContent }: Props) {
 	const [isAnswering, startAnsweringTransition] = useTransition();
 	const [isAISubmitting, setisAISubmitting] = useState(false);
+	const session = useSession();
+
+
 	const editorRef = useRef<MDXEditorMethods>(null);
 	const form = useForm<z.infer<typeof AnswerClientSchema>>({
 		resolver: zodResolver(AnswerClientSchema), //standardSchemaResolver(AnswerClientSchema),
@@ -46,10 +57,41 @@ export default function AnswerForm({ questionId }: { questionId: string }) {
 			if (result.success) {
 				form.reset();
 				toast.success("Answer posted successfully!");
+				if (editorRef.current) {
+					editorRef.current.setMarkdown("");
+				}
 			} else {
 				toast.error(result.error?.message || "Something went wrong.");
 			}
 		});
+	};
+
+	const generateAIAnswer = async () => {
+		if (session.status !== "authenticated") {
+			toast.error("You must be logged in to generate an AI answer.");
+			return;
+		}
+		setisAISubmitting(true);
+		try {
+			const { success, data, error } = await api.ai.getAnswer(questionTitle, questionContent);
+			if (!success) {
+				return toast.error(
+					error?.message || "Failed to generate AI answer. Please try again."
+				);
+			}
+			const formattedAnswer = data.replace(/<br>/g, " ").toString().trim();
+			if (editorRef.current) {
+				editorRef.current.setMarkdown(formattedAnswer);
+				form.setValue("content", formattedAnswer);
+				form.trigger("content");
+			}
+			toast.success("AI answer generated successfully!");
+
+		} catch (error) {
+			toast.error("Failed to generate AI answer. Please try again.");
+		} finally {
+			setisAISubmitting(false);
+		}
 	};
 
 	return (
@@ -60,6 +102,7 @@ export default function AnswerForm({ questionId }: { questionId: string }) {
 				</h4>
 				<Button
 					className="btn light-border-2 text-primary-500 dark:text-primary-500 gap-1.5 rounded-md border px-4 py-2.5 shadow-none"
+					onClick={generateAIAnswer}
 					disabled={isAISubmitting}
 				>
 					{isAISubmitting ? (
